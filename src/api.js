@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export async function getAllMovie() {
+export async function getAllMovieFromAPI() {
   try {
     const response = await axios.get('https://floating-sierra-20135.herokuapp.com/api/movies');
     return response.data;
@@ -9,7 +9,7 @@ export async function getAllMovie() {
   }
 }
 
-export async function getMovie(movieId) {
+export async function getMovieFromAPI(movieId) {
   try {
     const response = await axios.get(
       `https://floating-sierra-20135.herokuapp.com/api/movie/${movieId}`

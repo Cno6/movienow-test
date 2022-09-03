@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import TheLoader from '@/components/UI/TheLoader.vue';
 import MovieCard from '@/components/MovieCard.vue';
 export default {
@@ -50,7 +50,6 @@ export default {
     },
   },
   computed: {
-    ...mapState(['isLoading']),
     ...mapGetters(['movieList']),
   },
   mounted() {

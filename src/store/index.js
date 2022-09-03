@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import { getAllMovie } from '@/api';
+import { getAllMovieFromAPI } from '@/api';
 
 export default createStore({
   state: {
@@ -9,6 +9,9 @@ export default createStore({
   getters: {
     movieList(state) {
       return state.movies;
+    },
+    movieById: (state) => (id) => {
+      return state.movies.find((movie) => movie.id === Number(id));
     },
   },
   mutations: {
@@ -22,7 +25,7 @@ export default createStore({
   actions: {
     async fetchMovies({ commit }) {
       commit('toggleLoad', true);
-      await getAllMovie()
+      await getAllMovieFromAPI()
         .then((response) => {
           commit('loadMovies', response.data);
           commit('toggleLoad', false);

@@ -20,14 +20,57 @@
         <span class="navigation__link-text">Назад к списку</span></router-link
       >
     </div>
-    <MovieCard />
+    <TheLoader v-if="$store.state.isLoading" />
+    <template v-else>
+      <h4 v-if="error" class="movie-page__error">
+        К сожалению, по вашему запросу ничего не найдено...
+      </h4>
+      <MovieCard :movieData="movieData" v-else />
+    </template>
   </section>
 </template>
 
 <script>
 import MovieCard from '@/components/MovieCard.vue';
+import TheLoader from '@/components/UI/TheLoader.vue';
+import { getMovieFromAPI } from '../api';
+import { mapGetters, mapMutations } from 'vuex';
 export default {
-  components: { MovieCard },
+  components: { MovieCard, TheLoader },
+  data() {
+    return {
+      movieData: {},
+      error: false,
+    };
+  },
+  methods: {
+    ...mapMutations(['toggleLoad']),
+    async getMovie(movieId) {
+      this.toggleLoad(true);
+      await getMovieFromAPI(movieId).then((response) => {
+        const movieData = response.data;
+        this.toggleLoad(false);
+        if (movieData) {
+          this.movieData = movieData;
+        } else {
+          this.error = true;
+        }
+      });
+    },
+  },
+  computed: {
+    ...mapGetters(['movieById']),
+  },
+  beforeMount() {
+    const movieId = this.$route.params.movieId;
+    const movie = this.movieById(movieId);
+
+    if (movie) {
+      this.movieData = movie;
+    } else {
+      this.getMovie(movieId);
+    }
+  },
 };
 </script>
 
