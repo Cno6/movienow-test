@@ -2,29 +2,29 @@
   <section class="movies-page">
     <h2 class="movies-page__title">Фильмы</h2>
     <div class="movies-page__sort sort">
-      <label class="sort__label" for="sortByName">
-        <input
-          class="sort__checkbox"
-          type="radio"
-          name="sort"
-          id="sortByName"
-          value="sortByName"
-        />Отсортировать по названию</label
-      >
-      <label class="sort__label" for="sortByYear">
-        <input
-          class="sort__checkbox"
-          type="radio"
-          name="sort"
-          id="sortByYear"
-          value="sortByYear"
-        />Отсортировать по году</label
-      >
+      <input
+        class="sort__checkbox"
+        type="checkbox"
+        name="sort"
+        id="sortByTitle"
+        value="title"
+        v-model="currentSort"
+      />
+      <label class="sort__label" for="sortByTitle">Отсортировать по названию</label>
+      <input
+        class="sort__checkbox"
+        type="checkbox"
+        name="sort"
+        id="sortByYear"
+        value="year"
+        v-model="currentSort"
+      />
+      <label class="sort__label" for="sortByYear">Отсортировать по году</label>
     </div>
     <TheLoader v-if="$store.state.isLoading" />
     <div class="movies-page__movies-list">
       <MovieCard
-        v-for="movie in movieList"
+        v-for="movie in sortedList"
         :key="movie.id"
         :movieData="movie"
         @mouseenter="addHoverEffect"
@@ -40,6 +40,11 @@ import TheLoader from '@/components/UI/TheLoader.vue';
 import MovieCard from '@/components/MovieCard.vue';
 export default {
   components: { TheLoader, MovieCard },
+  data() {
+    return {
+      currentSort: [],
+    };
+  },
   methods: {
     ...mapActions(['fetchMovies']),
     addHoverEffect(e) {
@@ -51,6 +56,19 @@ export default {
   },
   computed: {
     ...mapGetters(['movieList']),
+    sortedList() {
+      if (!this.currentSort.length) return this.movieList;
+      return [...this.movieList].sort((movie1, movie2) => {
+        return movie1[this.currentSort] > movie2[this.currentSort] ? 1 : -1;
+      });
+    },
+  },
+  watch: {
+    currentSort(newValue) {
+      if (newValue.length > 1) {
+        this.currentSort.shift();
+      }
+    },
   },
   mounted() {
     this.fetchMovies();
@@ -78,12 +96,29 @@ export default {
   font-size: 16px;
   color: #c4c4c4;
   &__label {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
     &:not(:last-child) {
       margin-right: 32px;
     }
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      border: 1px solid #c4c4c4;
+      margin-right: 8px;
+    }
   }
   &__checkbox {
-    margin-right: 8px;
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    &:checked + .sort__label::before {
+      border: 1px solid rgba(255, 82, 82, 0.98);
+      background: rgba(255, 82, 82, 0.98) url('@/assets/Mark.svg') no-repeat center;
+    }
   }
 }
 

@@ -46,6 +46,8 @@ body {
   }
 }
 
-.router-link-exact-active {
+.loader {
+  width: fit-content;
+  margin: 0 auto;
 }
 </style>

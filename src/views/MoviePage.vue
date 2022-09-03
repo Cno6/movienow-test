@@ -81,6 +81,11 @@ export default {
     margin-bottom: 40px;
     border-bottom: 1px solid #c4c4c4;
   }
+  &__error {
+    font-weight: 500;
+    font-size: 32px;
+    color: #ffffff;
+  }
 }
 
 .navigation {
