@@ -23,15 +23,40 @@
     </div>
     <TheLoader v-if="$store.state.isLoading" />
     <div class="movies-page__movies-list">
-      <MovieCard />
+      <MovieCard
+        v-for="movie in movieList"
+        :key="movie.id"
+        :movieData="movie"
+        @mouseenter="addHoverEffect"
+        @mouseleave="removeHoverEffect"
+      />
     </div>
   </section>
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions } from 'vuex';
 import TheLoader from '@/components/UI/TheLoader.vue';
 import MovieCard from '@/components/MovieCard.vue';
-export default { components: { TheLoader, MovieCard } };
+export default {
+  components: { TheLoader, MovieCard },
+  methods: {
+    ...mapActions(['fetchMovies']),
+    addHoverEffect(e) {
+      e.target.classList.add('selected');
+    },
+    removeHoverEffect(e) {
+      e.target.classList.remove('selected');
+    },
+  },
+  computed: {
+    ...mapState(['isLoading']),
+    ...mapGetters(['movieList']),
+  },
+  mounted() {
+    this.fetchMovies();
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -61,5 +86,10 @@ export default { components: { TheLoader, MovieCard } };
   &__checkbox {
     margin-right: 8px;
   }
+}
+
+.selected {
+  transform: translateY(-8px);
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.35);
 }
 </style>

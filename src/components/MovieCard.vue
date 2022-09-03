@@ -1,27 +1,36 @@
 <template>
   <div class="movie-card">
     <div class="movie-card__poster">
-      <img :src="`http://www.kinopoisk.ru/images/film_big/${1003587}.jpg`" alt="" />
+      <img
+        :src="`http://www.kinopoisk.ru/images/film_big/${movieData.id_kinopoisk}.jpg`"
+        :alt="`Постер фильма ${movieData.title}`"
+      />
     </div>
     <div class="movie-card__content">
-      <h3 class="movie-card__title">Гамильтон</h3>
+      <router-link
+        class="movie-card__link"
+        :to="{ name: 'movie', params: { movieId: movieData.id } }"
+      >
+        <h3 class="movie-card__title">{{ movieData.title }}</h3>
+      </router-link>
       <p class="movie-card__details">
-        <span> 2015, Мюзикл</span>
+        <span v-if="movieData.year">{{ movieData.year }}, </span>
+        <span v-if="movieData.genres">{{ movieData.genres[0] }}</span>
       </p>
       <p class="movie-card__details">
-        <span>Режиссёр: Томас Каил</span>
+        <span v-if="movieData.directors">Режиссёр: {{ movieData.directors[0] }}</span>
       </p>
-      <p class="movie-card__details">
+      <p class="movie-card__details" v-if="actorList">
         Актёры:
-        <span class="movie-card__actor-list"> Лин-Мануэль Миранда, </span>
-        <span class="movie-card__actor-list"> Лесли Одом мл. </span>
+        <span v-for="(actor, idx) in actorList" :key="idx" class="movie-card__actor-list">{{
+          actor
+        }}</span>
       </p>
-      <p class="movie-card__description">
-        Жил-был пёс. Верно служил, но выгнали его по старости. И решил он повеситься, да повстречал
-        в лесу такого же старого волка
+      <p class="movie-card__description" v-if="movieData.description">
+        {{ movieData.description }}
       </p>
-      <span class="movie-card__duration">
-        142 мин / 02:22:00
+      <span v-if="movieData.collapse.duration" class="movie-card__duration">
+        {{ movieData.collapse.duration[0] + ':00' }}
         <span class="icon icon_duration"
           ><svg
             width="16"
@@ -40,29 +49,22 @@
       </span>
     </div>
   </div>
-  <!-- <div class="movie-card">
-    <div class="movie-card__poster">
-      <img :src="`http://www.kinopoisk.ru/images/film_big/${movie.id_kinopoisk}.jpg`" alt="" />
-    </div>
-    <div class="movie-card__content">
-      <router-link to="/"><h3 class="movie-card__title">{{ movie.title }}</h3></div><router-link>
-      <p class="movie-card__details">
-        <span>{{ movie.year }}, {{ movie.genres[0] }}</span>
-      </p>
-      <p class="movie-card__details">
-        <span>Режиссёр: {{ movie.directors[0] }}</span>
-      </p>
-      <p class="movie-card__details">
-        Актёры:
-        <span class="movie-card__actor-list" v-for="(actor, idx) in actorListString" :key="idx">{{ actor }}</span>
-      </p>
-      <p class="movie-card__description" v-if="movie.description">{{ movie.description }}</p>
-    </div>
-  </div> -->
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    movieData: {
+      type: Object,
+      require: true,
+    },
+  },
+  computed: {
+    actorList() {
+      return this.movieData.actors?.join(', ');
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -71,6 +73,7 @@ export default {};
   display: flex;
   background-color: #4d4747;
   margin-bottom: 24px;
+  transition: all 0.5s ease-in-out;
   &__poster {
     min-width: 168px;
     min-height: 168px;
@@ -86,11 +89,18 @@ export default {};
   &__content {
     padding: 32px 32px 32px 24px;
   }
+  &__link {
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline white;
+    }
+  }
   &__title {
     font-weight: 700;
     font-size: 36px;
     color: #ffffff;
     margin-bottom: 12px;
+    text-decoration: none;
   }
   &__details {
     font-weight: 700;
@@ -104,6 +114,8 @@ export default {};
   &__actor-list {
     font-size: 12px;
     text-transform: none;
+    font-weight: 400;
+    line-height: 16px;
     color: #e5e5e5;
   }
   &__description {

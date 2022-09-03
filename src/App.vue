@@ -38,4 +38,14 @@ body {
   margin: 0 auto;
   padding: 40px;
 }
+
+.router-link-active {
+  cursor: default;
+  &:hover {
+    text-decoration: none !important;
+  }
+}
+
+.router-link-exact-active {
+}
 </style>

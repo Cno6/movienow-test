@@ -1,7 +1,7 @@
 <template>
   <section class="movie-page">
     <div class="movie-page__navigation navigation">
-      <a class="navigation__link" href="#">
+      <router-link class="navigation__link" to="/">
         <span class="icon icon_arrow"
           ><svg
             width="12"
@@ -17,7 +17,7 @@
             />
           </svg>
         </span>
-        <span class="navigation__link-text">Назад к списку</span></a
+        <span class="navigation__link-text">Назад к списку</span></router-link
       >
     </div>
     <MovieCard />
@@ -26,7 +26,9 @@
 
 <script>
 import MovieCard from '@/components/MovieCard.vue';
-export default { components: { MovieCard } };
+export default {
+  components: { MovieCard },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -43,6 +45,14 @@ export default { components: { MovieCard } };
     font-size: 20px;
     text-decoration: none;
     color: rgba(255, 82, 82, 0.98);
+    transition: color 0.5s ease;
+    &:hover {
+      color: rgba(250, 40, 40, 0.98);
+      & path {
+        transition: fill 0.5s ease;
+        fill: rgba(250, 40, 40, 0.98);
+      }
+    }
   }
   &__link-text {
     text-decoration: underline;
